@@ -53,10 +53,13 @@ import {
   CircleHelp
 
 } from "lucide-react"
+import { createRef, useEffect } from "react"
+import Map from "@/components/map"
 
 export default function Home() {
   return (
-    <div className="relative">
+    <>
+    <div className="absolute w-full top-0" style={{ zIndex: 1 }}>
       <div className="flex justify-between p-4">
         <div>
         <Sheet>
@@ -170,5 +173,7 @@ export default function Home() {
         </div>
       </div>
     </div>
+    <Map />
+    </>
   );
 }
