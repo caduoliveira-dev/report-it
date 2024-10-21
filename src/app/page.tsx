@@ -50,7 +50,8 @@ import { Label } from "@/components/ui/label"
 
 import { 
   AlignJustify,
-  CircleHelp
+  CircleHelp,
+  Settings
 
 } from "lucide-react"
 import { createRef, useEffect } from "react"
@@ -80,6 +81,10 @@ export default function Home() {
               <SheetDescription>
                 carlos@gmail.com
               </SheetDescription>
+              <Link href="/configuracoes">
+                <Settings className="absolute bottom-[0.3cm] right-0 mr-4 cursor-pointer" />
+              </Link>
+
             </SheetHeader>
           </SheetContent>
         </Sheet>
@@ -97,7 +102,7 @@ export default function Home() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem>Ajuda</DropdownMenuItem>
-              <DropdownMenuItem>Comunicar um problema</DropdownMenuItem>
+              <DropdownMenuItem><Link href="/report">Comunicar um problema</Link></DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
         <Dialog>
