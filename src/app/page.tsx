@@ -97,7 +97,7 @@ export default function Home() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem>Ajuda</DropdownMenuItem>
-              <DropdownMenuItem>Comunicar um problema</DropdownMenuItem>
+              <DropdownMenuItem><Link href="/report">Comunicar um problema</Link></DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
         <Dialog>
