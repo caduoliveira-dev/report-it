@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
@@ -54,10 +56,35 @@ import {
   Settings
 
 } from "lucide-react"
-import { createRef, useEffect } from "react"
+import { createRef, useContext, useEffect, useState } from "react"
 import Map from "@/components/map"
+import { AuthenticationContext, useAuth } from "@/contexts/Authentication"
 
 export default function Home() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const ctx = useAuth();
+
+  async function onLogin() {
+    const { error, result } = await ctx.api.login(email, password);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+    error
+
+    ctx.api.setToken(result!.jwt);
+    const { error: errorLogin, result: resultLogin } = await ctx.api.me();
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    ctx.setSession(resultLogin);
+  }
+  
   return (
     <>
     <div className="absolute w-full top-0" style={{ zIndex: 1 }}>
@@ -107,7 +134,7 @@ export default function Home() {
         </DropdownMenu>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="ml-4 bg-red-900 hover:bg-red-950">Iniciar Sessão</Button>
+            <Button className="ml-4 bg-red-900 hover:bg-red-950">Iniciar Sessão {ctx.session?.name}</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-auto pt-12">
           <Tabs defaultValue="account" className="w-auto">
@@ -116,29 +143,34 @@ export default function Home() {
               <TabsTrigger value="cadastrar">Cadastrar</TabsTrigger>
             </TabsList>
             <TabsContent value="entrar">
-                <CardHeader>
-                  <CardTitle>Entrar</CardTitle>
-                  <CardDescription>
-                    Entre com seu email e senha.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="example@example.com" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="password">Senha</Label>
-                    <Input id="password" type="password"/>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-col">
-                  <Button className="w-full">Entrar</Button>
-                  <Button className="w-full mt-2" variant="outline">
-                    Entrar com conta Google 
-                    <img className="ml-2" width="24" height="24" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/>
-                    </Button>
-                </CardFooter>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  onLogin();
+                }}>
+                  <CardHeader>
+                    <CardTitle>Entrar</CardTitle>
+                    <CardDescription>
+                      Entre com seu email e senha.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="space-y-1">
+                      <Label htmlFor="email">Email</Label>
+                      <Input id="email" type="email" placeholder="example@example.com" value={email} onChange={e => setEmail(e.target.value)} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="password">Senha</Label>
+                      <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex flex-col">
+                    <Button className="w-full">Entrar</Button>
+                    <Button className="w-full mt-2" variant="outline">
+                      Entrar com conta Google 
+                      <img className="ml-2" width="24" height="24" src="https://img.icons8.com/color/48/google-logo.png" alt="google-logo"/>
+                      </Button>
+                  </CardFooter>
+                </form>
             </TabsContent>
             <TabsContent value="cadastrar">
                 <CardHeader>
