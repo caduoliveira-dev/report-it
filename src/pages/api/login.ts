@@ -15,7 +15,7 @@ async function handler(req: ReportItRequest, res: ReportItResponse) {
       }
     });
 
-  // sample
+  // Todo: db
   if (email !== 'email@example.com' && password !== 'password')
     return res.status(401).json({
       error: {

@@ -9,6 +9,10 @@ export default function Map() {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   useEffect(() => {
+    console.log(ref)
+    if (!ref || !ref.current)
+      return;
+
     (async () => {
       let js = await fetch(atob('aHR0cHM6Ly9tYXBzLmdvb2dsZWFwaXMuY29tL21hcHMvYXBpL2pzP2xpYnJhcmllcz1tYXBzJmtleT1BSXphU3lCNDFEUlViS1dKSFB4YUZqTUF3ZHJ6V3piVkthcnROR2c=')).then(e => e.text());
       const common = await fetch('/api/maps-common').then(e => e.text());
@@ -27,7 +31,7 @@ export default function Map() {
         disableDefaultUI: true,
       });
     })();
-  }, []);
+  }, [ref]);
 
   return (
     <div ref={ref} className="w-screen h-screen"></div>
