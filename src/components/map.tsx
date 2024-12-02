@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import React, { createRef, FormEvent, useEffect, useRef, useState } from 'react';
 import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from './ui/context-menu';
-import { ArrowUpDown, Car, CarFront, Home, Loader2, OctagonAlert, Siren, TrafficCone, TriangleAlert } from 'lucide-react';
+import { ArrowUpDown, Car, CarFront, CloudHail, Home, Loader2, OctagonAlert, Siren, TrafficCone, TriangleAlert } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -13,11 +13,15 @@ import { toast } from 'sonner';
 
 declare const window: any;
 
-const icons = [
+const icons: {
+  name: Report['name'],
+  icon: React.ReactNode,
+}[] = [
   { name: 'Blitz', icon: <Siren color="#3498db" /> },
   { name: 'Acidente', icon: <TriangleAlert color="#f1c40f" /> },
   { name: 'Rua Bloqueada', icon: <TrafficCone color="#e67e22" /> },
   { name: 'Congestionamento', icon: <OctagonAlert color="#e74c3c" /> },
+  { name: 'Chuva', icon: <CloudHail color="#74b9ff" /> },
 ];
 
 export default function MapComponent() {
@@ -32,18 +36,22 @@ export default function MapComponent() {
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
   const [coords, setCoords] = useState({ lat: 0, lng: 0 });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogReadOnly, setIsDialogReadOnly] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
   const [reports, setReports] = useState<Report[]>([]);
+  const [reportIndex, setReportIndex] = useState(0);
 
   async function onMapContextMenu(e: any) {
     const { latLng } = e;
     const lat: number = latLng.lat();
     const lng: number = latLng.lng();
 
-    setContextPosition({ x: e.pixel.x, y: e.pixel.y });
+    console.log(e)
+
+    setContextPosition({ x: e.domEvent.clientX, y: e.domEvent.clientY });
     setCoords({ lat, lng });
     contextMenuTriggerRef.current!.dispatchEvent(new Event('contextmenu', { bubbles: true }));
   }
@@ -138,7 +146,6 @@ export default function MapComponent() {
     return () => {
       document.removeEventListener('contextmenu', onDocumentContextMenu);
       document.removeEventListener('keydown', onDocumentKeyDown);
-      delete window.reports;
     };
   }, [isMapLoaded]);
 
@@ -159,9 +166,10 @@ export default function MapComponent() {
 
     if (window.reports)
       for (const report of window.reports)
-        report.marker.setMap(null);
+        report.marker.setMap(null), report.circle?.setMap(null);
 
-    window.reports = result! as Partial<Report[]>; // hacky way to access reports from the event i guess
+    setReports(result!);
+    window.reports = result! as Report[]; // hacky way to access reports from the event i guess
 
     for (let i = 0; i < result!.length; i++) {
       const report = result![i];
@@ -176,18 +184,53 @@ export default function MapComponent() {
         map: mapRef.current,
         gmpClickable: true,
       });
+
+      window.reports[i].marker.addListener('click', () => {
+        setCoords({ lat, lng });
+        setSelectedAlert(icons.findIndex(e => e.name === name));
+        setDate(report.date);
+        setDescription(report.description);
+        setIsDialogReadOnly(true);
+        setIsDialogOpen(true);
+        setReportIndex(i);
+      });
+
+      if (report.name == 'Chuva') {
+        // drawing a circle over the marker
+        window.reports[i].circle = new window.google.maps.Circle({
+          strokeColor: '#74b9ff',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#74b9ff',
+          fillOpacity: 0.35,
+          map: mapRef.current,
+          center: { lat, lng },
+          radius: 1500,
+        });
+
+        window.reports[i].circle.addListener('rightclick', onMapContextMenu)
+      }
     }
   }
 
   return (
     <>
     <div ref={ref} style={{ height: '100vh', width: '100%' }} />
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={(open) => {
+      setIsDialogOpen(open);
+      setTimeout(() => setIsDialogReadOnly(false), 500)
+    }}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Novo Alerta</DialogTitle>
+          <DialogTitle>{ !isDialogReadOnly && 'Novo' } Alerta</DialogTitle>
           <DialogDescription>
-            Reporte um problema no local
+            {
+              !isDialogReadOnly ? (
+                'Reporte um problema no local'
+              ) : (
+                `${reports[reportIndex].author.name} - ${reports[reportIndex].author.email}`
+              )
+            }
           </DialogDescription>
         </DialogHeader>
           <form onSubmit={onSubmit}>
@@ -212,19 +255,21 @@ export default function MapComponent() {
             </label>
             <label>
               Descrição
-              <Textarea placeholder="Digite uma descrição.." value={description} onChange={(e) => setDescription(e.target.value)} />
+              <Textarea disabled={isDialogReadOnly} placeholder="Digite uma descrição.." value={description} onChange={(e) => setDescription(e.target.value)} />
             </label>
           </form>
           
         <DialogFooter>
           {
-            isSubmitting ? (
-              <Button disabled>
-                <Loader2 className="animate-spin mr-2" size="sm" />
-                Salvando...
-              </Button>
-            ) : (
-              <Button type="button" onClick={onSubmit}>Salvar</Button>
+            !isDialogReadOnly && (
+              isSubmitting ? (
+                <Button disabled>
+                  <Loader2 className="animate-spin mr-2" size="sm" />
+                  Salvando...
+                </Button>
+              ) : (
+                <Button type="button" onClick={onSubmit}>Salvar</Button>
+              )
             )
           }
         </DialogFooter>
@@ -240,6 +285,8 @@ export default function MapComponent() {
           <ContextMenuSubTrigger inset>Reportar</ContextMenuSubTrigger>
           <ContextMenuSubContent className="w-48">
             {icons.map(({ name, icon }, i) => (
+              <>
+              { name == 'Chuva' && <ContextMenuSeparator /> }
               <ContextMenuItem key={name} onClick={() => {
                 setSelectedAlert(i);
                 setDate(new Date());
@@ -250,6 +297,7 @@ export default function MapComponent() {
                 <span className='w-8'>{icon}</span>
                 {name}
               </ContextMenuItem>
+              </>
             ))}
           </ContextMenuSubContent>
         </ContextMenuSub>

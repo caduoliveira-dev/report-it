@@ -35,7 +35,13 @@ async function post(req: ReportItRequest) {
 async function get(req: ReportItRequest) {
   const reports: Report[] = JSON.parse(fs.readFileSync('reports.json').toString());
 
-  return ReportItResponse.json({ result: reports });
+  return ReportItResponse.json({ result: reports.map(e => ({
+    ...e,
+    author: {
+      ...e.author,
+      email: e.author.email.replace(/(?<=\@.).../gm, '***').replace(/..(?=\@)/gm, '**'),
+    }
+  })) });
 }
 
 export const POST = withSession(post);
