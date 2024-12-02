@@ -21,19 +21,19 @@ export function encrypt(data: object) {
 }
 
 export default function withSession(
-  handler: (req: ReportItRequest, res: ReportItResponse) => Promise<void>,
+  handler: (req: ReportItRequest, res: ReportItResponse) => Promise<any>,
   required: boolean = false,
 ) {
   return async (req: ReportItRequest, res: ReportItResponse) => {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.headers.get('authorization')?.split(' ')[1];
     const session = decrypt(token ?? '');
 
     if ((!token || !session) && required)
-      return res.status(401).json({ error: { code: 'unauthorized', message: 'Não autorizado.' } });
+      return ReportItResponse.Unauthorized('Não autorizado.');
 
     if (session && typeof session != 'boolean')
       req.session = session;
 
-    await handler(req, res);
+    return await handler(req, res);
   }
 }

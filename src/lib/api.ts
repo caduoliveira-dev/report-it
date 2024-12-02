@@ -1,3 +1,4 @@
+import Report from "@/interfaces/Report";
 import Session from "@/interfaces/Session";
 
 declare const window: any;
@@ -57,6 +58,14 @@ export default class Api {
   }
 
   async me() {
-    return request<Session>('/api/@me');
+    return request<Session>('/api/me');
+  }
+
+  async createReport(name: string, date: Date, description: string, lat: number, lng: number) {
+    return request('/api/reports', { name, date, description, lat, lng });
+  }
+
+  async getReports() {
+    return request<Report[]>('/api/reports');
   }
 }

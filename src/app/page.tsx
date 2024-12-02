@@ -72,12 +72,11 @@ export default function Home() {
       console.log(error);
       return;
     }
-    error
 
     ctx.api.setToken(result!.jwt);
     const { error: errorLogin, result: resultLogin } = await ctx.api.me();
 
-    if (error) {
+    if (errorLogin) {
       console.log(error);
       return;
     }
@@ -103,10 +102,10 @@ export default function Home() {
               </Avatar>
               </SheetTitle>
               <SheetTitle>
-                Carlos Eduardo Ribeiro Oliveira
+                {ctx.session?.name}
               </SheetTitle>
               <SheetDescription>
-                carlos@gmail.com
+                {ctx.session?.email}
               </SheetDescription>
               <Link href="/configuracoes">
                 <Settings className="absolute bottom-[0.3cm] right-0 mr-4 cursor-pointer" />
@@ -132,9 +131,10 @@ export default function Home() {
               <DropdownMenuItem><Link href="/report">Comunicar um problema</Link></DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
-        <Dialog>
+        {!ctx.session && (
+          <Dialog>
           <DialogTrigger asChild>
-            <Button className="ml-4 bg-red-900 hover:bg-red-950">Iniciar Sessão {ctx.session?.name}</Button>
+            <Button className="ml-4 bg-red-900 hover:bg-red-950">Iniciar Sessão</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-auto pt-12">
           <Tabs defaultValue="account" className="w-auto">
@@ -206,7 +206,7 @@ export default function Home() {
           </Tabs>
           </DialogContent>
         </Dialog>
-        
+        )}
         </div>
       </div>
     </div>
