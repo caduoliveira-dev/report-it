@@ -54,7 +54,7 @@ export default class Api {
   }
 
   async login(email: string, password: string) {
-    return request<{ jwt: string }>('/api/login', { email, password });
+    return request<{ jwt: string }>('/api/auth/login', { email, password });
   }
 
   async me() {
