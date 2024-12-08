@@ -53,5 +53,38 @@
     "description": "",
     "lat": -10.2415528506686,
     "lng": -48.327290826057705
+  },
+  {
+    "author": {
+      "email": "email@example.com",
+      "name": "Rick Sanchez"
+    },
+    "name": "Acidente",
+    "date": "2024-12-08T01:26:33.629Z",
+    "description": "acidente no cruzamento do semáforo",
+    "lat": -10.230017274523181,
+    "lng": -48.33356879129843
+  },
+  {
+    "author": {
+      "email": "email@example.com",
+      "name": "Rick Sanchez"
+    },
+    "name": "Chuva",
+    "date": "2024-12-08T01:28:40.561Z",
+    "description": "muita chuva.",
+    "lat": -10.269384625800638,
+    "lng": -48.301834788193474
+  },
+  {
+    "author": {
+      "email": "email@example.com",
+      "name": "Rick Sanchez"
+    },
+    "name": "Rua Bloqueada",
+    "date": "2024-12-08T01:28:59.218Z",
+    "description": "nível da água muito alto na rua.",
+    "lat": -10.263379761653715,
+    "lng": -48.30230585393221
   }
 ]

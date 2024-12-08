@@ -1,0 +1,16 @@
+[
+  {
+    "id": "934b368c-8cad-4795-b792-977c4fa0559b",
+    "nome": "Carlos",
+    "sobrenome": "Eduardo",
+    "email": "carlos@gmail.com",
+    "password": "antero11"
+  },
+  {
+    "id": "df3a6e64-6fa5-4e07-a3be-8871ad3842c2",
+    "nome": "Norma",
+    "sobrenome": "Viana",
+    "email": "norma@gmail.com",
+    "password": "antero11"
+  }
+]

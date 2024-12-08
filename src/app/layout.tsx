@@ -4,7 +4,7 @@ import "./globals.css";
 import Head from "next/head";
 import Script from "next/script";
 import { AuthenticationContextProvider } from "@/contexts/Authentication";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,8 +33,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
         <title>Report It</title>
-        <Toaster />
         <AuthenticationContextProvider>{children}</AuthenticationContextProvider>
+        <Toaster />
       </body>
     </html>
   );

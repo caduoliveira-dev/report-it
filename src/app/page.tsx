@@ -58,11 +58,18 @@ import {
 } from "lucide-react"
 import { createRef, useContext, useEffect, useState } from "react"
 import Map from "@/components/map"
+import { useToast } from "@/hooks/use-toast";
 import { AuthenticationContext, useAuth } from "@/contexts/Authentication"
+import { registerUser } from "./actions/auth";
 
 export default function Home() {
+  const { toast } = useToast()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nome, setNome] = useState('');
+  const [sobrenome, setSobrenome] = useState('');
+  const [emailRegister, setEmailRegister] = useState('');
+  const [passwordRegister, setPasswordRegister] = useState('');
   const ctx = useAuth();
 
   async function onLogin() {
@@ -82,6 +89,28 @@ export default function Home() {
     }
 
     ctx.setSession(resultLogin);
+  }
+
+  async function onRegister(event: React.FormEvent) {
+    event.preventDefault();
+    const { error } = await registerUser(nome, sobrenome, emailRegister, passwordRegister);
+
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: error,
+      })
+      return;
+    }
+    
+    toast({
+      title: "Cadastro realizado com sucesso!"
+    })
+
+    setNome('')
+    setSobrenome('')
+    setEmailRegister('')
+    setPasswordRegister('')
   }
   
   return (
@@ -173,6 +202,7 @@ export default function Home() {
                 </form>
             </TabsContent>
             <TabsContent value="cadastrar">
+            <form onSubmit={onRegister}>
                 <CardHeader>
                   <CardTitle>Faça seu cadastro</CardTitle>
                   <CardDescription>
@@ -183,25 +213,26 @@ export default function Home() {
                   <div className="flex justify-between">
                     <div className="mr-4">
                     <Label htmlFor="firstname">Nome</Label>
-                    <Input id="nome" type="text" />
+                    <Input id="nome" type="text" value={nome} onChange={e => setNome(e.target.value)} required/>
                     </div>
                     <div>
                     <Label htmlFor="new">Sobrenome</Label>
-                    <Input id="sobrenome" type="text" />
+                    <Input id="sobrenome" type="text" value={sobrenome} onChange={e => setSobrenome(e.target.value)} required/>
                     </div>
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="example@example.com" />
+                    <Input id="email" type="email" placeholder="example@example.com" value={emailRegister} onChange={e => setEmailRegister(e.target.value)} required/>
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="senha">Senha</Label>
-                    <Input id="senha" type="password" />
+                    <Input id="senha" type="password" value={passwordRegister} onChange={e => setPasswordRegister(e.target.value)} required/>
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">Cadastrar</Button>
+                  <Button type="submit" className="w-full">Cadastrar</Button>
                 </CardFooter>
+                </form>
             </TabsContent>
           </Tabs>
           </DialogContent>
