@@ -53,7 +53,8 @@ import { Label } from "@/components/ui/label"
 import { 
   AlignJustify,
   CircleHelp,
-  Settings
+  Settings,
+  LogOut
 
 } from "lucide-react"
 import { createRef, useContext, useEffect, useState } from "react"
@@ -160,7 +161,14 @@ export default function Home() {
               <DropdownMenuItem><Link href="/report">Comunicar um problema</Link></DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
-        {!ctx.session && (
+        {ctx.session ? (
+          <Button
+            onClick={ctx.logout}
+            className="ml-4 bg-red-900 hover:bg-red-950"
+          >
+            <LogOut className="mr-2 h-4 w-4" /> Encerrar Sessão
+          </Button>
+        ) : (
           <Dialog>
           <DialogTrigger asChild>
             <Button className="ml-4 bg-red-900 hover:bg-red-950">Iniciar Sessão</Button>

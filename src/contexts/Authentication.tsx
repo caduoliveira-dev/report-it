@@ -8,6 +8,7 @@ export const AuthenticationContext = createContext({
   api: new Api(),
   session: null as Session | null,
   setSession: (session: Session | null) => {},
+  logout: () => {},
 });
 
 export const useAuth = () => {
@@ -28,9 +29,15 @@ export const AuthenticationContextProvider = ({ children }: { children: any | an
     })();
   }, []);
 
+  const logout = () => {
+    setSession(null);
+    ctx.api.setToken('');
+  };
+
   return <AuthenticationContext.Provider value={{
     api: ctx.api,
     session,
     setSession,
+    logout,
   }}>{children}</AuthenticationContext.Provider>;
 };
