@@ -4,6 +4,7 @@
     "nome": "Carlos",
     "sobrenome": "Eduardo",
     "email": "carlos@gmail.com",
+<<<<<<< HEAD
     "password": "antero11"
   },
   {
@@ -25,6 +26,8 @@
     "nome": "teste",
     "sobrenome": "supremo",
     "email": "teste@gmail.com",
+=======
+>>>>>>> 62c5115fa60d4d3c09b9c39e7c8375cfff2c6b4c
     "password": "123456"
   }
 ]
