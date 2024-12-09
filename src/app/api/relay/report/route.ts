@@ -8,10 +8,10 @@ const icons: {
   url: string,
 }[] = [
   { name: 'Blitz', url: '/icons/siren.png' },
-  { name: 'Acidente', url: '/icons/triangle-alert' },
-  { name: 'Rua Bloqueada', url: '/icons/traffic-cone' },
-  { name: 'Congestionamento', url: '/icons/octagon-alert' },
-  { name: 'Chuva', url: '/icons/cloud-hail' },
+  { name: 'Acidente', url: '/icons/triangle-alert.png' },
+  { name: 'Rua Bloqueada', url: '/icons/traffic-cone.png' },
+  { name: 'Congestionamento', url: '/icons/octagon-alert.png' },
+  { name: 'Chuva', url: '/icons/cloud-hail.png' },
 ];
 
 async function post(req: ReportItRequest) {

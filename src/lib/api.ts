@@ -65,6 +65,10 @@ export default class Api {
     return request('/api/reports', { name, date, description, lat, lng });
   }
 
+  async deleteReport(report: Report) {
+    return request(`/api/reports/delete`, report);
+  }
+
   async getReports() {
     return request<Report[]>('/api/reports');
   }

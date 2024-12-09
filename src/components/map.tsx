@@ -169,6 +169,20 @@ export default function MapComponent() {
     updateReports();
   }
 
+  async function onRemove() {
+    setIsSubmitting(true);
+
+    await ctx.api.deleteReport(
+      Object.keys(reports[reportIndex]).reduce(
+        (acc, cur) => cur != 'marker' ? { ...acc, [cur]: reports[reportIndex][cur] } : acc, {}
+      ) as Report);
+
+    setIsSubmitting(false);
+    setIsDialogOpen(false);
+    setDescription('');
+    updateReports();
+  }
+
   async function updateReports() {
     const { error, result } = await ctx.api.getReports();
     const wreports = (window.reports as Report[] || []).map((e: Report) => e);
@@ -184,7 +198,7 @@ export default function MapComponent() {
 
       const d = haversine({ lat: markerRef.current.position.lat, lng: markerRef.current.position.lng }, { lat: report.lat, lng: report.lng });
 
-      if (d > 5000)
+      if (d > 2000)
         continue;
 
       ctx.api.relayReport(d, report);
@@ -283,7 +297,7 @@ export default function MapComponent() {
           
         <DialogFooter>
           {
-            !isDialogReadOnly && (
+            !isDialogReadOnly ? (
               isSubmitting ? (
                 <Button disabled>
                   <Loader2 className="animate-spin mr-2" size="sm" />
@@ -291,6 +305,15 @@ export default function MapComponent() {
                 </Button>
               ) : (
                 <Button type="button" onClick={onSubmit}>Salvar</Button>
+              )
+            ) : (
+              isSubmitting ? (
+                <Button variant="destructive" disabled>
+                  <Loader2 className="animate-spin mr-2" size="sm" />
+                  Removendo...
+                </Button>
+              ) : (
+                <Button type="button" onClick={onRemove} variant="destructive">Apagar</Button>
               )
             )
           }

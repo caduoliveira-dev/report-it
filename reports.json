@@ -26,17 +26,6 @@
       "email": "email@example.com",
       "name": "Rick Sanchez"
     },
-    "name": "Congestionamento",
-    "date": "2024-12-02T01:50:18.029Z",
-    "description": "",
-    "lat": -10.236400403008936,
-    "lng": -48.34710827450884
-  },
-  {
-    "author": {
-      "email": "email@example.com",
-      "name": "Rick Sanchez"
-    },
     "name": "Chuva",
     "date": "2024-12-02T19:40:36.279Z",
     "description": "vish",
@@ -75,16 +64,5 @@
     "description": "muita chuva.",
     "lat": -10.269384625800638,
     "lng": -48.301834788193474
-  },
-  {
-    "author": {
-      "email": "email@example.com",
-      "name": "Rick Sanchez"
-    },
-    "name": "Rua Bloqueada",
-    "date": "2024-12-08T01:28:59.218Z",
-    "description": "nível da água muito alto na rua.",
-    "lat": -10.263379761653715,
-    "lng": -48.30230585393221
   }
 ]
