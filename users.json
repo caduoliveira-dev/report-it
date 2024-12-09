@@ -12,5 +12,19 @@
     "sobrenome": "Viana",
     "email": "norma@gmail.com",
     "password": "antero11"
+  },
+  {
+    "id": "d25b4d2b-3695-4e4f-b1be-589ad574908e",
+    "nome": "romario",
+    "sobrenome": "dias paz",
+    "email": "romariodias@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": "221e5d9b-58ef-4f41-bda1-4b4c9a673cec",
+    "nome": "teste",
+    "sobrenome": "supremo",
+    "email": "teste@gmail.com",
+    "password": "123456"
   }
 ]
