@@ -138,7 +138,9 @@ export default function Home() {
                 {ctx.session?.email}
               </SheetDescription>
               <Link href="/configuracoes">
+              {(ctx.session) ? (
                 <Settings className="absolute bottom-[0.3cm] right-0 mr-4 cursor-pointer" />
+              ): null}
               </Link>
 
             </SheetHeader>
@@ -158,7 +160,9 @@ export default function Home() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <Link href="/help"><DropdownMenuItem>Ajuda</DropdownMenuItem></Link>
-              <DropdownMenuItem><Link href="/report">Comunicar um problema</Link></DropdownMenuItem>
+              {(ctx.session) ? (
+                <DropdownMenuItem><Link href="/report">Comunicar um problema</Link></DropdownMenuItem>
+              ): null}
             </DropdownMenuContent>
         </DropdownMenu>
         {ctx.session ? (
@@ -171,7 +175,7 @@ export default function Home() {
         ) : (
           <Dialog>
           <DialogTrigger asChild>
-            <Button className="ml-4 bg-red-900 hover:bg-red-950">Iniciar Sessão</Button>
+            <Button className="ml-4 bg-blue-900 hover:bg-blue-950">Iniciar Sessão</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-auto pt-12">
           <Tabs defaultValue="account" className="w-auto">
