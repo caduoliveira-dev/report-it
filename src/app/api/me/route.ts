@@ -10,4 +10,4 @@ async function handler(req: ReportItRequest) {
   });
 }
 
-export const GET = withSession(handler, true);
+export const GET = withSession(handler);

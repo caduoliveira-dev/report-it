@@ -10,8 +10,24 @@ import Api from '@/lib/api';
 import { useAuth } from '@/contexts/Authentication';
 import Report from '@/interfaces/Report';
 import { toast } from 'sonner';
+import Coords from '@/interfaces/Coords';
 
 declare const window: any;
+
+function haversine(pos: Coords, pos2: Coords): number {
+  const R = 6371e3;
+  const φ1 = pos.lat * Math.PI / 180;
+  const φ2 = pos2.lat * Math.PI / 180;
+  const Δφ = (pos2.lat - pos.lat) * Math.PI / 180;
+  const Δλ = (pos2.lng - pos.lng) * Math.PI / 180;
+
+  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
 
 const icons: {
   name: Report['name'],
@@ -49,8 +65,6 @@ export default function MapComponent() {
     const lat: number = latLng.lat();
     const lng: number = latLng.lng();
 
-    console.log(e)
-
     setContextPosition({ x: e.domEvent.clientX, y: e.domEvent.clientY });
     setCoords({ lat, lng });
     contextMenuTriggerRef.current!.dispatchEvent(new Event('contextmenu', { bubbles: true }));
@@ -76,18 +90,7 @@ export default function MapComponent() {
     pos = markerRef.current.position;
 
     for (const report of window.reports) {
-      const R = 6371e3;
-      const φ1 = pos.lat * Math.PI / 180;
-      const φ2 = report.lat * Math.PI / 180;
-      const Δφ = (report.lat - pos.lat) * Math.PI / 180;
-      const Δλ = (report.lng - pos.lng) * Math.PI / 180;
-
-      const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-        Math.cos(φ1) * Math.cos(φ2) *
-        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-      const d = R * c;
+      const d = haversine({ lat: pos.lat, lng: pos.lng }, { lat: report.lat, lng: report.lng });
 
       if (d < 500) {
         toast(`Você está a ${d} metros de um(a) ${report.name}!`, {
@@ -104,6 +107,8 @@ export default function MapComponent() {
   }
 
   useEffect(() => {
+    const updater = setInterval(updateReports, 5 * 1000);
+
     document.addEventListener('contextmenu', onDocumentContextMenu);
 
     (async () => {
@@ -143,9 +148,12 @@ export default function MapComponent() {
       document.addEventListener('keydown', onDocumentKeyDown);
     })();
 
+    // todo real-time updates
+
     return () => {
       document.removeEventListener('contextmenu', onDocumentContextMenu);
       document.removeEventListener('keydown', onDocumentKeyDown);
+      clearInterval(updater);
     };
   }, [isMapLoaded]);
 
@@ -163,13 +171,24 @@ export default function MapComponent() {
 
   async function updateReports() {
     const { error, result } = await ctx.api.getReports();
-
-    if (window.reports)
-      for (const report of window.reports)
-        report.marker.setMap(null), report.circle?.setMap(null);
+    const wreports = (window.reports as Report[] || []).map((e: Report) => e);
 
     setReports(result!);
     window.reports = result! as Report[]; // hacky way to access reports from the event i guess
+    console.log(wreports)
+
+    for (const report of result!) {
+      // O(n^2) goes brrrr but
+      if (wreports.length == 0 || wreports.filter(e => e.lat == report.lat && e.lng == report.lng).length != 0)
+        continue;
+
+      const d = haversine({ lat: markerRef.current.position.lat, lng: markerRef.current.position.lng }, { lat: report.lat, lng: report.lng });
+
+      if (d > 5000)
+        continue;
+
+      ctx.api.relayReport(d, report);
+    }
 
     for (let i = 0; i < result!.length; i++) {
       const report = result![i];
@@ -196,7 +215,6 @@ export default function MapComponent() {
       });
 
       if (report.name == 'Chuva') {
-        // drawing a circle over the marker
         window.reports[i].circle = new window.google.maps.Circle({
           strokeColor: '#74b9ff',
           strokeOpacity: 0.8,
@@ -211,6 +229,10 @@ export default function MapComponent() {
         window.reports[i].circle.addListener('rightclick', onMapContextMenu)
       }
     }
+
+    if (wreports)
+      for (const report of wreports)
+        (report as any).marker.setMap(null), (report as any /* srryuu*/).circle?.setMap(null);
   }
 
   return (

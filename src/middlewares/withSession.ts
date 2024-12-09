@@ -22,7 +22,7 @@ export function encrypt(data: object) {
 
 export default function withSession(
   handler: (req: ReportItRequest, res: ReportItResponse) => Promise<any>,
-  required: boolean = false,
+  required: boolean = true,
 ) {
   return async (req: ReportItRequest, res: ReportItResponse) => {
     const token = req.headers.get('authorization')?.split(' ')[1];

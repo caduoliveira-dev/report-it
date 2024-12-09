@@ -68,4 +68,11 @@ export default class Api {
   async getReports() {
     return request<Report[]>('/api/reports');
   }
+
+  async relayReport(distance: number, report: Report) {
+    return request('/api/relay/report', {
+      distance,
+      report,
+    });
+  }
 }
