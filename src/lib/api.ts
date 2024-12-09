@@ -79,4 +79,8 @@ export default class Api {
       report,
     });
   }
+
+  async updateProfile(name: string, password: string, newPassword: string) {
+    return request('/api/me', { name, password, newPassword });
+  }
 }

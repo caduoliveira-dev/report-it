@@ -8,6 +8,7 @@ export const AuthenticationContext = createContext({
   api: new Api(),
   session: null as Session | null,
   setSession: (session: Session | null) => {},
+  updateSession: async () => {},
   logout: () => {},
 });
 
@@ -19,14 +20,16 @@ export const AuthenticationContextProvider = ({ children }: { children: any | an
   const ctx = useAuth();
   const [session, setSession] = useState<Session | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const { error: meError, result: meResult } = await ctx.api.me();
+  async function updateSession() {
+    const { error, result } = await ctx.api.me();
 
-      if (!meError) {
-        setSession(meResult);
-      }
-    })();
+    if (!error) {
+      setSession(result);
+    }
+  }
+
+  useEffect(() => {
+    updateSession();
   }, []);
 
   const logout = () => {
@@ -39,5 +42,6 @@ export const AuthenticationContextProvider = ({ children }: { children: any | an
     session,
     setSession,
     logout,
+    updateSession,
   }}>{children}</AuthenticationContext.Provider>;
 };

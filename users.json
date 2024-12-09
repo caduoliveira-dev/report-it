@@ -2,32 +2,8 @@
   {
     "id": "934b368c-8cad-4795-b792-977c4fa0559b",
     "nome": "Carlos",
-    "sobrenome": "Eduardo",
+    "sobrenome": "Eduardo0",
     "email": "carlos@gmail.com",
-<<<<<<< HEAD
-    "password": "antero11"
-  },
-  {
-    "id": "df3a6e64-6fa5-4e07-a3be-8871ad3842c2",
-    "nome": "Norma",
-    "sobrenome": "Viana",
-    "email": "norma@gmail.com",
-    "password": "antero11"
-  },
-  {
-    "id": "d25b4d2b-3695-4e4f-b1be-589ad574908e",
-    "nome": "romario",
-    "sobrenome": "dias paz",
-    "email": "romariodias@gmail.com",
-    "password": "123456"
-  },
-  {
-    "id": "221e5d9b-58ef-4f41-bda1-4b4c9a673cec",
-    "nome": "teste",
-    "sobrenome": "supremo",
-    "email": "teste@gmail.com",
-=======
->>>>>>> 62c5115fa60d4d3c09b9c39e7c8375cfff2c6b4c
-    "password": "123456"
+    "password": "1234567"
   }
 ]
