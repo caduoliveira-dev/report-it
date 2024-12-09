@@ -157,7 +157,7 @@ export default function Home() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem><Link href="/help">Ajuda</Link></DropdownMenuItem>
+              <Link href="/help"><DropdownMenuItem>Ajuda</DropdownMenuItem></Link>
               <DropdownMenuItem><Link href="/report">Comunicar um problema</Link></DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
